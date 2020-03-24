@@ -1,0 +1,59 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: c53bc0e74c8901cac8530c7a45d68a8e19641e7fe6b377584209c0af7d5f439a
+
+name:           funEvalExpr
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/MatiCG/EvalExpr#readme>
+homepage:       https://github.com/MatiCG/EvalExpr#readme
+bug-reports:    https://github.com/MatiCG/EvalExpr/issues
+author:         MatiCG
+maintainer:     MatiCG
+copyright:      2019 MatiCG
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/MatiCG/EvalExpr
+
+library
+  other-modules:
+      Paths_funEvalExpr
+  hs-source-dirs:
+      lib
+  build-depends:
+      base >=4.7 && <5
+  default-language: Haskell2010
+
+executable funEvalExpr
+  main-is: Main.hs
+  other-modules:
+      Paths_funEvalExpr
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , funEvalExpr
+  default-language: Haskell2010
+
+test-suite funEvalExpr-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_funEvalExpr
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , funEvalExpr
+  default-language: Haskell2010

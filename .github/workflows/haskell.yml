@@ -1,0 +1,24 @@
+name: CPP CI
+
+on:
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build-ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-haskell@v1
+      with:
+        ghc-version: '8.8.2'
+        cabal-version: '3.0'
+    - name: Install dependencies
+      run: |
+        cabal update
+        cabal install --only-dependencies
+    - name: Build
+      run: |
+        make
