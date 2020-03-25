@@ -2,13 +2,18 @@
 import System.Environment
 import System.Exit
 import System.IO
+import Text.Read
 
 main :: IO()
 main = getArgs >>= parse
 
 parse ["--usage"] = usage >> exit
 
-parse [expression] = operate(expression) >> exit
+parse [expression] = do
+    if getNumber(expression) == Nothing
+        then operate(expression)
+    else putStrLn expression
+    exit
 
 parse args = usage >> failure "Error: Invalid Arg"
 
@@ -35,6 +40,9 @@ stack (c) = do
 
 calculate = do
     print("Calculate")
+
+getNumber :: String -> Maybe Double
+getNumber str = readMaybe str :: Maybe Double
 
 isOperator :: Char -> Bool
 isOperator (c) = c `elem` ".+-*/"
