@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c53bc0e74c8901cac8530c7a45d68a8e19641e7fe6b377584209c0af7d5f439a
+-- hash: 63944ec212418b7cb30998c1b2b2ee0a5d53222e937191e8a43eb63aaa116abd
 
 name:           funEvalExpr
 version:        0.1.0.0
@@ -25,10 +25,12 @@ source-repository head
   location: https://github.com/MatiCG/EvalExpr
 
 library
+  exposed-modules:
+      EvalExpr
   other-modules:
       Paths_funEvalExpr
   hs-source-dirs:
-      lib
+      src
   build-depends:
       base >=4.7 && <5
   default-language: Haskell2010
@@ -49,11 +51,14 @@ test-suite funEvalExpr-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      BasicTestsSpec
       Paths_funEvalExpr
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      QuickCheck
+    , base >=4.7 && <5
     , funEvalExpr
+    , hspec
   default-language: Haskell2010

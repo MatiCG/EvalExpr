@@ -22,7 +22,7 @@ dependencies:
 - base >= 4.7 && < 5
 
 library:
-  source-dirs: lib
+  source-dirs: src
 
 executables:
   funEvalExpr:
@@ -45,3 +45,5 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - funEvalExpr
+    - hspec
+    - QuickCheck
