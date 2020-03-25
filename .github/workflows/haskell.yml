@@ -20,5 +20,6 @@ jobs:
         cabal update
         cabal install --only-dependencies
     - name: Build
-      run: |
-        make
+      run: make
+    - name: Run tests
+      run: make run-tests
