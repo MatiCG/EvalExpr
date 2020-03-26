@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 63944ec212418b7cb30998c1b2b2ee0a5d53222e937191e8a43eb63aaa116abd
+-- hash: 23fee32abe62e9e0b9d19fbf4c6dc6c123debe156e5b8ab9be867366f088cf02
 
 name:           funEvalExpr
 version:        0.1.0.0
@@ -27,6 +27,7 @@ source-repository head
 library
   exposed-modules:
       EvalExpr
+      Operations
   other-modules:
       Paths_funEvalExpr
   hs-source-dirs:
