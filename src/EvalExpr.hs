@@ -10,6 +10,9 @@ evalExpr = getArgs >>= parse
 
 data Rpn = Rpn {output :: String, stack :: String}
 
+data Precedences = Precedences {pow :: Int, mult :: Int, division :: Int, plus :: Int, minus :: Int}
+precedence = Precedences 4 3 3 2 2
+
 parse ["--usage"] = usage >> exit
 
 parse [expression] = do
@@ -30,9 +33,16 @@ evaluate expression rpn lastc = do
             let operated = operate (head expression) lastc rpn
             if output operated == "Error"
                 then failure "Error: Non-allowed character found"
-            else
-                evaluate(tail expression) operated (head expression)
-    else calculate rpn
+            else evaluate(tail expression) operated (head expression)
+    else do 
+        let finalRpn = checkStack rpn
+        calculate finalRpn
+
+checkStack :: Rpn -> Rpn
+checkStack rpn = do
+    if length (stack rpn) >= 1
+        then checkStack (Rpn (output rpn ++ " " ++ charToString(head (stack rpn))) (tail (stack rpn)))
+    else rpn
 
 operate :: Char -> Char -> Rpn -> Rpn
 operate c lastc rpn = do
@@ -42,13 +52,45 @@ operate c lastc rpn = do
                 then Rpn (output rpn ++ charToString c) (stack rpn)
             else Rpn (output rpn ++ " " ++ charToString c) (stack rpn)
     else if c == '('
-        then Rpn (output rpn) (stack rpn ++ charToString c)
+        then Rpn (output rpn) (charToString c ++ stack rpn)
     else if c == ')'
         then rightParenthesisAction rpn
     else if isOperator(c) == True
-        then do
-             Rpn (output rpn) (stack rpn ++ charToString c)
+        then operatorAction c rpn
     else Rpn "Error" "Error"
+
+operatorAction :: Char -> Rpn -> Rpn
+operatorAction o rpn = do
+    if length (stack rpn) >= 1 && head (stack rpn) /= '('
+        then do
+            if isPrioritary o (head (stack rpn)) == False
+                then operatorAction o (Rpn (output rpn ++ " " ++ charToString(head (stack rpn))) (tail (stack rpn)))
+            else Rpn (output rpn) (charToString o ++ stack rpn)
+    else Rpn (output rpn) (charToString o ++ stack rpn)
+
+isPrioritary :: Char -> Char -> Bool
+isPrioritary a b = do
+    let ap = getOperatorPrecedence a
+    let bp = getOperatorPrecedence b
+
+    if ap == bp && a == '^'
+        then True
+    else do
+        if ap > bp
+            then True
+        else False
+
+getOperatorPrecedence :: Char -> Int
+getOperatorPrecedence o = do
+    if o == '^'
+        then pow precedence
+    else if o == '*'
+        then mult precedence
+    else if o == '/'
+        then division precedence
+    else if o == '-'
+        then minus precedence
+    else plus precedence
 
 rightParenthesisAction :: Rpn -> Rpn
 rightParenthesisAction rpn = do
