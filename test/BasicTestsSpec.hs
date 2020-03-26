@@ -19,7 +19,7 @@ spec = describe "Tests for basic functions like isOperator" $ do
         it "check wrong operator" $ do
             isOperator('7') `shouldBe` False
         it "check if parenthesis is operator" $ do
-            isOperator('(') `shouldBe` False
+            isOperator('(') `shouldBe` True
 
     describe "getNumber" $ do
         it "getNumber 12*12" $ do
