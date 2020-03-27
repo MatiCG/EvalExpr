@@ -1,4 +1,4 @@
-name: CPP CI
+name: Haskell CI
 
 on:
   pull_request:
