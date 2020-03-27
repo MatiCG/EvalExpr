@@ -1,6 +1,7 @@
 module BasicTestsSpec where
 
 import EvalExpr
+import Operations
 import Test.Hspec
 import Test.QuickCheck
 
@@ -21,7 +22,7 @@ spec = describe "Tests for basic functions like isOperator" $ do
         it "check if parenthesis is operator" $ do
             isOperator('(') `shouldBe` True
 
-    describe "getNumber" $ do
+    describe "getNumber Tests" $ do
         it "getNumber 12*12" $ do
             getNumber("12*12") `shouldBe` Nothing
         it "getNumber 240" $ do
