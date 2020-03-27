@@ -1,6 +1,7 @@
 module Operations where
 
 import Text.Read
+import Numeric
 
 data Result = Result {result :: Double, numbers :: [String]}
 
@@ -16,13 +17,8 @@ processRpn finalRpn res = do
             let newR = processString (head finalRpn) res
             processRpn (tail finalRpn) newR
     else do
-        printResult (result res)
-
-printResult :: (Show a, RealFrac a) => a -> IO ()
-printResult nb
-  | a == 0 = print b
-  | otherwise = print nb
-  where (b, a) = properFraction nb
+        let num = read (head (numbers res)) :: Float
+        putStrLn (showFFloat (Just 2) num "")
 
 processString :: String -> Result -> Result
 processString str res = do
