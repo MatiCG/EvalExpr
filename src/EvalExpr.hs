@@ -19,7 +19,7 @@ parse [expression] = do
     let rpn = Rpn "" ""
 
     if getNumber(expression) == Nothing
-        then evaluate expression rpn '0'
+        then evaluate expression rpn 'm'
     else putStrLn expression
     exit
 
@@ -33,6 +33,8 @@ evaluate expression rpn lastc = do
             let operated = operate (head expression) lastc rpn
             if output operated == "Error"
                 then failure ("Error: Non-allowed character found " ++ (stack operated))
+            else if output operated == "Negative"
+                then evaluate(tail expression) (Rpn (output rpn ++ " -") (stack rpn)) 'm'
             else evaluate(tail expression) operated (head expression)
     else do 
         let finalRpn = checkStack rpn
@@ -46,9 +48,11 @@ checkStack rpn = do
 
 operate :: Char -> Char -> Rpn -> Rpn
 operate c lastc rpn = do
-    if (c >= '0' && c <= '9') || c == '.'
+    if (isOperator(lastc) == True || lastc == 'm' || lastc == ' ') && c == '-' && lastc /= ')'
+        then Rpn "Negative" "Negative"
+    else if (c >= '0' && c <= '9') || c == '.'
         then do
-            if (lastc >= '0' && lastc <= '9') || lastc == '.'
+            if length(output rpn) == 0  || ((lastc >= '0' && lastc <= '9') || lastc == '.' || lastc == 'm')
                 then Rpn (output rpn ++ charToString c) (stack rpn)
             else Rpn (output rpn ++ " " ++ charToString c) (stack rpn)
     else if c == '('
@@ -57,6 +61,8 @@ operate c lastc rpn = do
         then rightParenthesisAction rpn
     else if isOperator(c) == True
         then operatorAction c rpn
+    else if c == ' '
+        then rpn
     else Rpn "Error" (charToString c)
 
 operatorAction :: Char -> Rpn -> Rpn
