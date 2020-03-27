@@ -3,7 +3,7 @@ module EvalExpr where
 import System.Environment
 import System.Exit
 import System.IO
-import Text.Read
+import Operations
 
 evalExpr :: IO()
 evalExpr = getArgs >>= parse
@@ -32,11 +32,11 @@ evaluate expression rpn lastc = do
         then do
             let operated = operate (head expression) lastc rpn
             if output operated == "Error"
-                then failure "Error: Non-allowed character found"
+                then failure ("Error: Non-allowed character found " ++ (stack operated))
             else evaluate(tail expression) operated (head expression)
     else do 
         let finalRpn = checkStack rpn
-        calculate finalRpn
+        calculate (output finalRpn)
 
 checkStack :: Rpn -> Rpn
 checkStack rpn = do
@@ -57,7 +57,7 @@ operate c lastc rpn = do
         then rightParenthesisAction rpn
     else if isOperator(c) == True
         then operatorAction c rpn
-    else Rpn "Error" "Error"
+    else Rpn "Error" (charToString c)
 
 operatorAction :: Char -> Rpn -> Rpn
 operatorAction o rpn = do
@@ -100,18 +100,8 @@ rightParenthesisAction rpn = do
             rightParenthesisAction new
     else Rpn (output rpn) (tail (stack rpn))
 
-calculate rpn = do
-    print(output rpn)
-    print(stack rpn)
-
 charToString :: Char -> String
 charToString c = [c]
-
-getNumber :: String -> Maybe Double
-getNumber str = readMaybe str :: Maybe Double
-
-isOperator :: Char -> Bool
-isOperator c = c `elem` ".+-*/^()"
 
 usage = do
     putStrLn "USAGE: ./funEvalExpr expression\n"
