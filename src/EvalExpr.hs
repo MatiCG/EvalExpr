@@ -114,6 +114,3 @@ usage = do
     putStrLn "      expression        the expression to calculate"            
 
 exit = exitWith ExitSuccess
-
-failure :: String -> IO a
-failure str = hPutStrLn stderr str >> exitWith (ExitFailure 84)

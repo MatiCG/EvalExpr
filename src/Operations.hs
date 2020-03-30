@@ -2,6 +2,8 @@ module Operations where
 
 import Text.Read
 import Numeric
+import System.Exit
+import System.IO
 
 data Result = Result {result :: Double, numbers :: [String]}
 
@@ -15,7 +17,10 @@ processRpn finalRpn res = do
     if (length finalRpn >= 1)
         then do
             let newR = processString (head finalRpn) res
-            processRpn (tail finalRpn) newR
+            if head (numbers newR) == "Error"
+                then failure "Error while calculating"
+            else
+                processRpn (tail finalRpn) newR
     else do
         let num = read (head (numbers res)) :: Float
         putStrLn (showFFloat (Just 2) num "")
@@ -28,8 +33,11 @@ processString str res = do
             let o2 = head (numbers res)
             let o1 = (numbers res) !! 1
             let r = evaluateToken (head str) o1 o2
-            let newStack = r:(tail (tail (numbers res)))
-            Result (read r :: Double) newStack
+            if r == "Error"
+                then Result 0 ["Error"]
+            else do
+                let newStack = r:(tail (tail (numbers res)))
+                Result (read r :: Double) newStack
 
     else Result (result res) (str:(numbers res))
 
@@ -43,7 +51,10 @@ evaluateToken token o1 o2 = do
     else if token == '*'
         then show (n1 * n2)
     else if token == '/'
-        then show (n1 / n2)
+        then do
+            if n2 == 0
+                then "Error"
+            else show (n1 / n2)
     else if token == '-'
         then show (n1 - n2)
     else show (n1 + n2)
@@ -61,3 +72,5 @@ isOperator c = c `elem` ".+-*/^()"
 getNumber :: String -> Maybe Double
 getNumber str = readMaybe str :: Maybe Double
 
+failure :: String -> IO a
+failure str = hPutStrLn stderr str >> exitWith (ExitFailure 84)
