@@ -18,7 +18,9 @@ parse ["--usage"] = usage >> exit
 parse [expression] = do
     let rpn = Rpn "" ""
 
-    if getNumber(expression) == Nothing
+    if length expression < 1
+        then failure "Error: empty string"
+    else if getNumber(expression) == Nothing
         then evaluate expression rpn 'm'
     else putStrLn expression
     exit
@@ -28,11 +30,13 @@ parse args = usage >> failure "Error: Invalid Arg"
 evaluate:: String -> Rpn -> Char -> IO()
 evaluate expression rpn lastc = do
 
-    if (length expression >= 1)
+    if (length expression < 1) && (length (stack rpn)< 1)
+        then failure "Error: Bad expression"
+    else if (length expression >= 1)
         then do
             let operated = operate (head expression) lastc rpn
             if output operated == "Error"
-                then failure ("Error: Non-allowed character found " ++ (stack operated))
+                then failure ("Error: " ++ (stack operated))
             else if output operated == "Negative"
                 then evaluate(tail expression) (Rpn (output rpn ++ " -") (stack rpn)) 'm'
             else evaluate(tail expression) operated (head expression)
@@ -60,10 +64,12 @@ operate c lastc rpn = do
     else if c == ')'
         then rightParenthesisAction rpn
     else if isOperator(c) == True
-        then operatorAction c rpn
+        then if isOperator(lastc) == True && lastc /= '(' && lastc /= ')'
+            then Rpn "Error" "Two enchained operations"
+        else operatorAction c rpn
     else if c == ' '
         then rpn
-    else Rpn "Error" (charToString c)
+    else Rpn "Error" ("Non-allowed character found " ++ (charToString c))
 
 operatorAction :: Char -> Rpn -> Rpn
 operatorAction o rpn = do
@@ -104,7 +110,9 @@ rightParenthesisAction rpn = do
         then do
             let new = Rpn (output rpn ++ " " ++ charToString (head (stack rpn))) (tail (stack rpn))
             rightParenthesisAction new
-    else Rpn (output rpn) (tail (stack rpn))
+    else if length (stack rpn) >= 1 && head (stack rpn) == '('
+        then Rpn (output rpn) (tail (stack rpn))
+    else Rpn "Error" "Missing parenthesis"
 
 charToString :: Char -> String
 charToString c = [c]

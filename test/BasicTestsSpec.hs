@@ -31,3 +31,15 @@ spec = describe "Tests for basic functions like isOperator" $ do
             getNumber("12.14") `shouldBe` Just 12.14
         it "getNumber 240a" $ do
             getNumber("240a") `shouldBe` Nothing
+
+    describe "evaluateToken Tests" $ do
+        it "evaluate 12 * 12" $ do
+            evaluateToken '*' "12" "12" `shouldBe` "144.0"
+        it "evaluate 12 / 0" $ do
+            evaluateToken '/' "12" "0" `shouldBe` "Error"
+        it "evaluate 12 / 12" $ do
+            evaluateToken '/' "12" "12" `shouldBe` "1.0"
+        it "evaluate 1 + 5.35" $ do
+            evaluateToken '+' "1" "5.35" `shouldBe` "6.35"
+        it "evaluate 1 - 5.35" $ do
+            evaluateToken '-' "1" "5.35" `shouldBe` "-4.35"    

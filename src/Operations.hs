@@ -9,8 +9,11 @@ data Result = Result {result :: Double, numbers :: [String]}
 
 calculate :: String -> IO()
 calculate finalRpn = do
-    let list = strToWordArray ' ' finalRpn
-    processRpn list (Result 0 [])
+    if head finalRpn == ' '
+        then failure "Error"
+    else do
+        let list = strToWordArray ' ' finalRpn
+        processRpn list (Result 0 [])
 
 processRpn :: [String] -> Result -> IO()
 processRpn finalRpn res = do
@@ -30,15 +33,17 @@ processString str res = do
     let nb = getNumber str
     if nb == Nothing && length str == 1 && isOperator (head str) == True
         then do
-            let o2 = head (numbers res)
-            let o1 = (numbers res) !! 1
-            let r = evaluateToken (head str) o1 o2
-            if r == "Error"
+            if length (numbers res) < 2
                 then Result 0 ["Error"]
             else do
-                let newStack = r:(tail (tail (numbers res)))
-                Result (read r :: Double) newStack
-
+                let o2 = head (numbers res)
+                let o1 = (numbers res) !! 1
+                let r = evaluateToken (head str) o1 o2
+                if r == "Error"
+                    then Result 0 ["Error"]
+                else do
+                    let newStack = r:(tail (tail (numbers res)))
+                    Result (read r :: Double) newStack
     else Result (result res) (str:(numbers res))
 
 evaluateToken :: Char -> String -> String -> String
