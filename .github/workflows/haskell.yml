@@ -26,6 +26,11 @@ jobs:
       run: make
     - name: Run tests
       run: make run-tests
+    - name: Generate coverage report
+      uses: 8c6794b6/hpc-codecov-action@v2
+      with:
+        target: cabal:test
+        excludes: Main,Paths_my_package
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
