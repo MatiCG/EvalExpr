@@ -5,7 +5,7 @@ all:
 	cp `stack path --local-install-root`/bin/$(NAME) .
 
 run-tests:
-	stack --jobs=4 test
+	stack --jobs=4 test --coverage
 
 clean:
 	rm $(NAME)
