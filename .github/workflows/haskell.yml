@@ -29,7 +29,7 @@ jobs:
     - name: Generate coverage report
       uses: 8c6794b6/hpc-codecov-action@v2
       with:
-        target: cabal:test
+        target: stack:funEvalExpr-test
         excludes: Main,Paths_my_package
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
